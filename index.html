@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPAARSH — A Digital Touch of Care</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div class="overlay" id="authOverlay">
+  <div class="auth-card">
+    <h2 id="authTitle">Log in to SPAARSH</h2>
+    <p class="sub" id="authSubText">Welcome back.</p>
+
+    <div id="signupExtraFields" style="display:none;">
+      <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="Your full name"></div>
+      <div class="field-row">
+        <div class="field"><label>Age</label><input type="number" id="fAge" placeholder="e.g. 28"></div>
+        <div class="field"><label>Date of Birth</label><input type="date" id="fDob"></div>
+      </div>
+      <div class="field"><label>Phone Number</label><input type="tel" id="fPhone" placeholder="+91 9xxxxxxxxx"></div>
+      <div class="field-row">
+        <div class="field"><label>Emergency Contact Name</label><input type="text" id="fEmName" placeholder="e.g. Mother"></div>
+        <div class="field"><label>Emergency Contact Phone</label><input type="tel" id="fEmPhone" placeholder="+91 9xxxxxxxxx"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Active From</label><input type="time" id="fActiveStart" value="07:00"></div>
+        <div class="field"><label>Active Until</label><input type="time" id="fActiveEnd" value="23:00"></div>
+      </div>
+    </div>
+
+    <div class="field"><label>Email</label><input type="email" id="authEmail" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="Min 6 characters"></div>
+
+    <button class="btn" id="authSubmitBtn">Log In</button>
+    <div class="err" id="authError"></div>
+    <p class="toggle-line"><span id="authToggleText">Don't have an account?</span> <a id="authToggleLink">Sign up</a></p>
+    <div style="border-top:1px solid var(--line);margin-top:10px;padding-top:10px;">
+      <button class="btn-outline" id="guestBtn">Continue as guest (for demo)</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="navbar">
+    <div class="brand"><div class="brand-mark">S</div><div class="brand-name">SPAARSH</div></div>
+    <div class="nav-right">
+      <div class="bell" id="bellBtn">🔔<span class="badge" id="bellBadge" style="display:none;">0</span>
+        <div class="notif-panel" id="notifPanel"></div>
+      </div>
+      <span class="logout-link" id="logoutBtn">Log out</span>
+    </div>
+  </div>
+
+  <div class="tabstrip">
+    <button class="tabbtn active" data-tab="mystatus">🏠 My Status</button>
+    <button class="tabbtn" data-tab="watch">👀 People I Watch</button>
+    <button class="tabbtn" data-tab="guardians">🔗 Guardians</button>
+    <button class="tabbtn" data-tab="meds">💊 Medications</button>
+    <button class="tabbtn" data-tab="chat">💬 Chat</button>
+    <button class="tabbtn" data-tab="profile">👤 Profile</button>
+    <button class="tabbtn" data-tab="settings">⚙️ Settings</button>
+  </div>
+
+  <div class="content">
+
+    <!-- MY STATUS -->
+    <div class="panel active" id="panel-mystatus">
+      <div class="status-hero" id="statusHero">
+        <div class="icon" id="statusIcon">📱</div>
+        <div class="title" id="statusTitle">All is well</div>
+        <div class="sub" id="statusSub">Real touch/motion detected.</div>
+        <div class="timer" id="statusTimer"></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn" id="respondBtn" disabled>I'm okay</button>
+        <button class="btn-outline" id="forceBtn">Force trigger (demo)</button>
+      </div>
+
+      <div class="card">
+        <div class="card-h">Your inactivity threshold (Level 1)</div>
+        <div class="thresh-edit">
+          <input type="number" id="thresholdInput" value="20" min="5">
+          <span style="font-size:12.5px;color:var(--ink-dim);">seconds idle (demo) — real deployment uses 4–6 hours</span>
+          <button class="btn btn-sm" id="saveThresholdBtn">Save</button>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-dim);margin-top:8px;">Only triggers within your active window: <b id="activeWindowLabel">—</b>. Outside this window (e.g. sleep hours), silence is treated as normal.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><span><span class="dot live"></span>Live touch detection</span></div>
+        <div class="row"><span>Last activity</span><span class="v" id="touchVal">just now</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h" style="cursor:pointer;" id="sensorToggleHead">📡 Real sensors <span id="sensorChevron">▾</span></div>
+        <div id="sensorPanelBody">
+          <button class="btn btn-sm" id="enableSensorsBtn" style="margin-bottom:10px;">Enable motion, GPS & camera</button>
+          <div class="row"><span><span class="dot off" id="motionDot"></span>Accelerometer</span><span class="v" id="motionVal">Not enabled</span></div>
+          <div class="row"><span><span class="dot off" id="gyroDot"></span>Gyroscope</span><span class="v" id="gyroVal">Not enabled</span></div>
+          <div class="row"><span><span class="dot off" id="gpsDot"></span>GPS</span><span class="v" id="gpsVal">Not enabled</span></div>
+          <div class="row"><span><span class="dot off" id="camDot"></span>Camera (on app resume)</span><span class="v" id="camVal">Not enabled</span></div>
+          <video id="camPreview" autoplay muted playsinline style="display:none;"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEOPLE I WATCH -->
+    <div class="panel" id="panel-watch">
+      <p style="font-size:12.5px;color:var(--ink-dim);margin-bottom:12px;">People who accepted you as their guardian. Location and personal details stay hidden until a real emergency (Level 3).</p>
+      <div id="watchList"><div class="empty">You are not watching anyone yet.</div></div>
+    </div>
+
+    <!-- GUARDIANS -->
+    <div class="panel" id="panel-guardians">
+      <div class="card">
+        <div class="card-h">Add a guardian</div>
+        <div class="add-row"><input type="email" id="addGuardianEmail" placeholder="Guardian's registered email"><button class="btn btn-sm" id="addGuardianBtn">Send request</button></div>
+        <div id="guardianAddMsg" style="font-size:11.5px;color:var(--ink-dim);"></div>
+      </div>
+      <div class="card">
+        <div class="card-h">Your guardians</div>
+        <div id="myGuardiansList"><div class="empty">No guardians added yet.</div></div>
+      </div>
+      <div class="card">
+        <div class="card-h">Requests for you</div>
+        <div id="incomingRequestsList"><div class="empty">No pending requests.</div></div>
+      </div>
+    </div>
+
+    <!-- MEDICATIONS -->
+    <div class="panel" id="panel-meds">
+      <div class="add-row">
+        <input type="text" id="medName" placeholder="Medication name">
+        <input type="number" id="medSeconds" placeholder="Due in (s)" value="30" style="max-width:90px;">
+        <button class="btn btn-sm" id="addMedBtn">Add</button>
+      </div>
+      <div class="card"><div id="medList"><div class="empty">No medications added yet.</div></div></div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="panel" id="panel-chat">
+      <div class="chat-layout">
+        <div class="chat-list" id="chatList"><div class="empty">No conversations yet.</div></div>
+        <div class="chat-window">
+          <div class="chat-msgs" id="chatMsgs"><div class="empty">Select someone to chat with.</div></div>
+          <div class="chat-input"><input type="text" id="chatInputBox" placeholder="Type a message…" disabled><button id="chatSendBtn" disabled>Send</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE (new) -->
+    <div class="panel" id="panel-profile">
+      <div class="card" style="max-width:420px;margin:0 auto;">
+        <div id="profileViewBox"></div>
+        <div id="profileEditBox" style="display:none;"></div>
+        <div style="text-align:center;margin-top:12px;">
+          <button class="btn-outline btn-sm" id="profileEditToggleBtn">Edit profile</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS (new) -->
+    <div class="panel" id="panel-settings">
+      <div class="card">
+        <div class="card-h">Account</div>
+        <div class="row"><span>Email</span><span class="v" id="settingsEmail">—</span></div>
+        <div class="row"><span>Member since</span><span class="v" id="settingsCreated">—</span></div>
+        <button class="btn-outline btn-sm" id="settingsLogoutBtn" style="margin-top:10px;">Log out</button>
+      </div>
+      <div class="card">
+        <div class="card-h">Change password</div>
+        <div class="field"><label>Current password</label><input type="password" id="currentPassword"></div>
+        <div class="field"><label>New password</label><input type="password" id="newPassword"></div>
+        <button class="btn btn-sm" id="changePasswordBtn">Update password</button>
+        <div class="settings-msg" id="passwordMsg"></div>
+      </div>
+      <div class="danger-zone">
+        <h3>Danger zone</h3>
+        <p style="font-size:12px;color:var(--ink-dim);margin-bottom:10px;">Permanently delete your account and all associated data (profile, guardians, medications, chats, notifications).</p>
+        <button class="btn-danger" id="deleteAccountBtn">Delete my account</button>
+        <div class="settings-msg" id="deleteMsg"></div>
+      </div>
+    </div>
+
+  </div>
+  <footer>SPAARSH — Team Titans · Real sensors, real backend, real-time everything</footer>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<!-- App modules (order matters: config first, main last) -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/monitoring.js"></script>
+<script src="js/guardians.js"></script>
+<script src="js/medications.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
